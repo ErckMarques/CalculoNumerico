@@ -1,6 +1,10 @@
 venv/
 Lista 2/
-Jupiters/
 Listas/
-Aula 10 - SistEqsLineares - LU e Cholesky.pdf
-Aula 9 - SistEqsLineares - Gauss e pivoteamento.pdf
+Metodos/eliminacao_gauss.py
+Metodos/metodos_funcoes.py
+Aulas/Aula 10 - SistEqsLineares - LU e Cholesky.pdf
+Aulas/Aula 9 - SistEqsLineares - Gauss e pivoteamento.pdf
+venv\
+Metodos\testes.ipynb
+Aula\livro-py.pdf
