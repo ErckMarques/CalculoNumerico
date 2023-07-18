@@ -10,7 +10,7 @@ Métodos para o calculo de zeros de funções (arquivo metodos_funcoes.py).
       a mudança de sinal da função. 
       Repete o processo até encontrar uma aproximação da raiz.
      
-      x_{n+1} = \frac{a + b}{2}
+      $$ x_{n+1} = \frac{a + b}{2} $$
 
     - Método das Cordas ou Falsa Posição: Utiliza uma reta 
       que passa pelos pontos inicial e final do intervalo
