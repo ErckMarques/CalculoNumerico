@@ -1,4 +1,45 @@
 
+def valida_matriz_quadrada(matriz: list):
+    '''
+    Método para verificação de uma matriz quadrada
+
+    Args:
+        matriz (list): matriz a ser validada
+
+    Returns: 
+        bool: True se a matriz for quadrada, False se a matriz não for quadrada.
+    '''
+    linhas = len(matriz)
+    contador = 0
+
+    for i in range(linhas):
+        colunas = len(matriz[i])
+        if colunas == linhas:       # verifica se para cada linha o número de colunas é igual ao número de linhas
+            contador += 1
+    
+    if (contador ** 2) == (colunas * linhas):    # testa se (contador)^2 é igual ao produto das linhas pelas colunas
+        return True                              # é quadrada
+    else: return False                           # não é quadrada
+
+def imprime(matriz):
+    '''
+    Método para imprimir uma matriz bonitinha (ainda precisa de ajustes, mas no geral, funciona bem).
+
+    Args: 
+        matriz (list): matriz a ser exibida.
+    
+    Returns: 
+        Uma matriz impressa de forma convencional.
+    '''
+    linhas, colunas = len(matriz), len(matriz[0])
+    # condição para 1 linha e 1 coluna
+    for i in range(linhas):
+        print("|", end=" ")
+        for j in range(colunas):
+            print(f"{matriz[i][j]:^3}", end=" ")
+        print("|")
+    return ""
+
 def eliminacao_gauss(matriz_coeficientes, matriz_independente, parcial=True):
     """
     Implementação do método da Eliminação de Gauss com pivotamento parcial ou total.
@@ -65,13 +106,3 @@ def eliminacao_gauss(matriz_coeficientes, matriz_independente, parcial=True):
 
     return a, b
 
-# método para imprimir uma matriz bonitinha
-def imprime(matriz):
-    linhas, colunas = len(matriz), len(matriz[0])
-    # condição para 1 linha e 1 coluna
-    for i in range(linhas):
-        print("|", end=" ")
-        for j in range(colunas):
-            print(f"{matriz[i][j]:^3}", end=" ")
-        print("|")
-    return ""
