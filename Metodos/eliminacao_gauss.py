@@ -15,11 +15,10 @@ def valida_matriz_quadrada(matriz: list):
     for i in range(linhas):
         colunas = len(matriz[i])
         if colunas == linhas:       # verifica se para cada linha o número de colunas é igual ao número de linhas
-            contador += 1
+            continue                # para cada verificação válida, apenas continua. Na iminência de uma invalidação encerra o processo
+        else: return False          # se acorrer alguma invalidação, a matriz não é quadrada. Retorna False.
     
-    if (contador ** 2) == (colunas * linhas):    # testa se (contador)^2 é igual ao produto das linhas pelas colunas
-        return True                              # é quadrada
-    else: return False                           # não é quadrada
+    return True
 
 def imprime(matriz):
     '''
