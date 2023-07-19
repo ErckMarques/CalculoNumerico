@@ -8,6 +8,10 @@ Informações:
 
 -Dentro de "Listas" encontram-se as listas utilizadas durante o semestre e arquivos .py dos métodos, sendo estes modificados para resolverem as questões propostas.
 
+
+## Motivações futuras
+-Construir um shell para aplicação e uso dos métodos
+
 ## Todos os métodos estão baseados no livro "Métodos Numéricos 3ª Ed." de José Dias dos Santos e Zanoni Carvalho da Silva, Editora Universitária UFPE.
 --------------------------------------------------------------------------------------------------------------------------------
 Sugestões, dicas e informações:
