@@ -1,5 +1,8 @@
+from copy import deepcopy
+from numpy import zeros, shape
 
-def valida_matriz_quadrada(matriz: list):
+
+def _valida_matriz_quadrada(matriz: list[list[float]]):
     '''
     Método para verificação de uma matriz quadrada
 
@@ -10,36 +13,18 @@ def valida_matriz_quadrada(matriz: list):
         bool: True se a matriz for quadrada, False se a matriz não for quadrada.
     '''
     linhas = len(matriz)
-    contador = 0
-
-    for i in range(linhas):
-        colunas = len(matriz[i])
-        if colunas == linhas:       # verifica se para cada linha o número de colunas é igual ao número de linhas
-            continue                # para cada verificação válida, apenas continua. Na iminência de uma invalidação encerra o processo
-        else: return False          # se acorrer alguma invalidação, a matriz não é quadrada. Retorna False.
+    try:
+        for i in range(linhas):
+            colunas = len(matriz[i])
+            if colunas == linhas:       # verifica se para cada linha o número de colunas é igual ao número de linhas
+                continue                # para cada verificação válida, apenas continua. Na iminência de uma invalidação encerra o processo
+            else: return False          # se acorrer alguma invalidação, a matriz não é quadrada. Retorna False.
+    except:
+        return False
     
     return True
 
-def imprime(matriz):
-    '''
-    Método para imprimir uma matriz bonitinha (ainda precisa de ajustes, mas no geral, funciona bem).
-
-    Args: 
-        matriz (list): matriz a ser exibida.
-    
-    Returns: 
-        Uma matriz impressa de forma convencional.
-    '''
-    linhas, colunas = len(matriz), len(matriz[0])
-    # condição para 1 linha e 1 coluna
-    for i in range(linhas):
-        print("|", end=" ")
-        for j in range(colunas):
-            print(f"{matriz[i][j]:^3}", end=" ")
-        print("|")
-    return ""
-
-def eliminacao_gauss(matriz_coeficientes, matriz_independente, parcial=True):
+def eliminacao_gauss(matriz_coeficientes: list[list[float]], matriz_independente: list[float] = [0.0], parcial: bool=True):
     """
     Implementação do método da Eliminação de Gauss com pivotamento parcial ou total.
 
@@ -53,7 +38,7 @@ def eliminacao_gauss(matriz_coeficientes, matriz_independente, parcial=True):
         list: Matriz dos termos independentes escalonada.
     """
 
-    def _pivotacao(matriz, matriz_indep, parcial=True):
+    def _pivotacao(matriz: list[list[float]], matriz_indep: list[float], parcial=True):
         """
         Função para realizar a pivotação parcial ou total de uma matriz.
 
@@ -86,22 +71,31 @@ def eliminacao_gauss(matriz_coeficientes, matriz_independente, parcial=True):
 
         return matriz, matriz_indep
 
+    if matriz_independente == 0.0:
+            b = zeros(shape(matriz_coeficientes))
+
     n = len(matriz_coeficientes)
-    a = matriz_coeficientes[:]                    # Cria uma cópia da matriz de coeficientes
-    b = matriz_independente[:]                    # Cria uma cópia da matriz de termos independentes
+    a = deepcopy(matriz_coeficientes)       # Cria uma cópia segura da matriz de coeficientes
+    b = deepcopy(matriz_independente)       # Cria uma cópia segura da matriz de termos independentes
 
-    for k in range(n):
-        if a[k][k] == 0:
-            a, b = _pivotacao(a, b, parcial)
+    if _valida_matriz_quadrada(matriz_coeficientes):
+        for k in range(n):
             if a[k][k] == 0:
-                raise ValueError("A matriz é singular!")
+                a, b = _pivotacao(a, b, parcial)
+                if a[k][k] == 0:
+                    raise ValueError("A matriz é singular! A matriz fornecida tem muitos elementos proximos de zero.") 
 
-        for i in range(k + 1, n):
-            fator = a[i][k] / a[k][k]
-            a[i][k] = 0
-            for j in range(k + 1, n):
-                a[i][j] -= fator * a[k][j]
-            b[i] -= fator * b[k]
+            for i in range(k + 1, n):
+                fator = a[i][k] / a[k][k]
+                a[i][k] = 0
+                for j in range(k + 1, n):
+                    a[i][j] -= fator * a[k][j]
+                b[i] -= fator * b[k]
+    else: 
+        raise ValueError("A matriz não eh quadrada! Forneça uma matriz quadrada.")
 
-    return a, b
+    if all(elemento == 0.0 for elemento in b):
+        return a
+    else: 
+        return a, b
 
