@@ -2,9 +2,9 @@ from copy import deepcopy
 from numpy import zeros, shape
 
 
-def _valida_matriz_quadrada(matriz: list[list[float]]):
+def _valida_matriz_quadrada(matriz: list[list[float]]) -> bool:
     '''
-    Método para verificação de uma matriz quadrada
+    Método para verificação de uma matriz quadrada.
 
     Args:
         matriz (list): matriz a ser validada
@@ -12,33 +12,54 @@ def _valida_matriz_quadrada(matriz: list[list[float]]):
     Returns: 
         bool: True se a matriz for quadrada, False se a matriz não for quadrada.
     '''
+
     linhas = len(matriz)
-    try:
-        for i in range(linhas):
-            colunas = len(matriz[i])
-            if colunas == linhas:       # verifica se para cada linha o número de colunas é igual ao número de linhas
-                continue                # para cada verificação válida, apenas continua. Na iminência de uma invalidação encerra o processo
-            else: return False          # se acorrer alguma invalidação, a matriz não é quadrada. Retorna False.
-    except:
-        return False
-    
-    return True
+    colunas = [len(linha) for linha in matriz] # cada elemento de colunas recebe o numero de colunas de cada linha da matriz
+
+    return all(coluna == linhas for coluna in colunas)
+
 
 def eliminacao_gauss(matriz_coeficientes: list[list[float]], matriz_independente: list[float] = [0.0], parcial: bool=True):
-    """
-    Implementação do método da Eliminação de Gauss com pivotamento parcial ou total.
+    """ 
+    Executa o Método da Eliminação de Gauss (com pivotamento parcial ou total) num sistema de equações lineares.
 
     Args:
-        matriz_coeficientes (list): Matriz dos coeficientes (A).
-        matriz_independente (list): Matriz dos termos independentes (b).
+        matriz_coeficientes (list[list[float]]): Matriz dos coeficientes (A).
+        matriz_independente (list[float]): Matriz dos termos independentes (b).
         parcial (bool): Indicador do tipo de pivotamento desejado. Por padrão, é utilizado o método parcial.
 
     Returns:
-        list: Matriz dos coeficientes escalonada.
-        list: Matriz dos termos independentes escalonada.
+        resposta: uma lista contendo as listas abaixo:
+            list[list[float]]: Matriz dos coeficientes escalonada.
+            list[list[float]]: Matriz dos termos independentes modificados segundo as operações do escalonamento.
+            np.array: Matriz dos fatores utilizados no escalonamento. Útil ao método LU.
+    -----------
+    Exemplo:
+        
+        matriz_coeficientes = [[1,-2,4],[4,0,6],[8,6,8]]
+        termos_independentes = [4,1,5]
+        
+        matrizes_respostas = eliminacao_gaus(matriz_coeficientes, termos_independentes)
+        
+        A = np.array(matrizes_respostas[0])     # matriz A escalonada.
+        b = np.array(matrizes_respostas[1][0])  # matriz b dos termos independentes após escalonamento.
+        m = np.array(matrizes_respostas[2])     # matriz dos fatores utilizados no processo de escalonamento.
+        
+        Saída:
+        
+        A = array([[  1.   -2.    4. ]
+                   [  0.    8.  -10. ]
+                   [  0.    0.    3.5]]
+        
+        b = array([4., -15, 14.25])
+
+        fatores = array([[ 0.,  0.,  0.],
+                         [-1.,  0.,  0.],
+                         [-1., -8.,  0.]])
+    -----------
     """
 
-    def _pivotacao(matriz: list[list[float]], matriz_indep: list[float], parcial: bool=True):
+    def _pivotacao(matriz: list[list[float]], matriz_indep: list[float] = [0.0], parcial: bool=True):
         """
         Função para realizar a pivotação parcial ou total de uma matriz.
 
@@ -71,12 +92,14 @@ def eliminacao_gauss(matriz_coeficientes: list[list[float]], matriz_independente
 
         return matriz, matriz_indep
 
-    if matriz_independente == 0.0:
-            b = zeros(shape(matriz_coeficientes))
+    if matriz_independente == [0.0]:
+        matriz_independente = zeros(len(matriz_coeficientes))
 
     n = len(matriz_coeficientes)
     a = deepcopy(matriz_coeficientes)       # Cria uma cópia segura da matriz de coeficientes
     b = deepcopy(matriz_independente)       # Cria uma cópia segura da matriz de termos independentes
+    m = zeros(shape(matriz_coeficientes))     # Cria uma matriz identidade a partir da matriz de coeficientes. Objeto Numpy.
+    respostas = []
 
     if _valida_matriz_quadrada(matriz_coeficientes):
         for k in range(n):
@@ -87,15 +110,22 @@ def eliminacao_gauss(matriz_coeficientes: list[list[float]], matriz_independente
 
             for i in range(k + 1, n):
                 fator = a[i][k] / a[k][k]
-                a[i][k] = 0
-                for j in range(k + 1, n):
-                    a[i][j] -= fator * a[k][j]
-                b[i] -= fator * b[k]
+                m[i][k] -= fator                            # preenchendo a lista com os fatores de eliminação                
+                b[i] -= fator * b[k]                        # alteração no vetor independente
+                for j in range(k + 1, n):                                  
+                    a[i][j] -= fator * a[k][j]              # alteração na linha 
+                    a[i][k] = 0
     else: 
         raise ValueError("A matriz não eh quadrada! Forneça uma matriz quadrada.")
 
-    if all(elemento == 0.0 for elemento in b):
-        return a
-    else: 
-        return a, b
+    # converter em objetos numpy depois
 
+    if all(elemento == 0.0 for elemento in b):
+        respostas.append(a)
+        respostas.append(m)
+    else: 
+        respostas.append(a)
+        respostas.append([b])
+        respostas.append(m)
+
+    return respostas
