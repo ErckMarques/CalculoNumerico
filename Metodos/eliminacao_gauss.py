@@ -1,23 +1,6 @@
 from copy import deepcopy
 from numpy import zeros, shape
-
-
-def _valida_matriz_quadrada(matriz: list[list[float]]) -> bool:
-    '''
-    Método para verificação de uma matriz quadrada.
-
-    Args:
-        matriz (list): matriz a ser validada
-
-    Returns: 
-        bool: True se a matriz for quadrada, False se a matriz não for quadrada.
-    '''
-
-    linhas = len(matriz)
-    colunas = [len(linha) for linha in matriz] # cada elemento de colunas recebe o numero de colunas de cada linha da matriz
-
-    return all(coluna == linhas for coluna in colunas)
-
+from condicoes import valida_matriz_quadrada
 
 def eliminacao_gauss(matriz_coeficientes: list[list[float]], matriz_independente: list[float] = [0.0], parcial: bool=True):
     """ 
@@ -101,7 +84,7 @@ def eliminacao_gauss(matriz_coeficientes: list[list[float]], matriz_independente
     m = zeros(shape(matriz_coeficientes))     # Cria uma matriz identidade a partir da matriz de coeficientes. Objeto Numpy.
     respostas = []
 
-    if _valida_matriz_quadrada(matriz_coeficientes):
+    if valida_matriz_quadrada(matriz_coeficientes):
         for k in range(n):
             if a[k][k] == 0:
                 a, b = _pivotacao(a, b, parcial)
@@ -129,3 +112,20 @@ def eliminacao_gauss(matriz_coeficientes: list[list[float]], matriz_independente
         respostas.append(m)
 
     return respostas
+
+def eliminacao_gauss_jordan(matriz_coeficientes: list[list[float]], matriz_independente: list[float] = [0.0], parcial: bool=True):
+    '''
+    Método que implementa a Eliminação de Gauss-Jordan ou escalonamento completo.
+    
+    Args:
+        matriz_coeficientes (list[list[float]]): Matriz dos coeficientes (A).
+        matriz_independente (list[float]): Matriz dos termos independentes (b).
+        parcial (bool): Indicador do tipo de pivotamento desejado. Por padrão, é utilizado o método parcial.
+
+    Returns:
+        resposta: uma lista contendo as listas abaixo:
+            list[list[float]]: Matriz dos coeficientes escalonada.
+            list[list[float]]: Matriz dos termos independentes modificados segundo as operações do escalonamento.
+            np.array: Matriz dos fatores utilizados no escalonamento. Útil ao método LU.
+    -----------
+    '''
