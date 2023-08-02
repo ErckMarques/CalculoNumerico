@@ -2,11 +2,11 @@ Lista 2/
 Listas/
 #Metodos/eliminacao_gauss.py
 Metodos/metodos_funcoes.py
-Aulas/Aula 10 - SistEqsLineares - LU e Cholesky.pdf
-Aulas/Aula 9 - SistEqsLineares - Gauss e pivoteamento.pdf
-venv\
+venv
 Metodos\testes.ipynb
 Aula\livro-py.pdf
 Metodos\__pycache__
-Listas\
-Jupiters\
+\Listas\
+Metodos\matrizes.py
+Jupiters
+#
